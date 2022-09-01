@@ -17,7 +17,7 @@ to be added.
 
 All project documents are in the [Project Wiki](../../wiki/Home).
 
-- [Vision Statement](https://github.com/ThanadolU/ku-polls.wiki.git)
-- [Requirements](https://github.com/ThanadolU/ku-polls.wiki.git)
-- [Development Plan]()
-- [Iteration 1]()
+- [[Vision Statement]]
+- [[Requirements]]
+- [[Development Plan]]
+- [[Iteration 1]]
