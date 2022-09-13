@@ -5,3 +5,30 @@ li a {
 body {
     background: white url("images/background.png") no-repeat;
 }
+
+.question {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.question th, .question td {
+    border: 2px solid black;
+    padding: 8px;
+}
+
+.choice {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.choice th {
+    border: 2px solid black;
+    padding: 8px;
+    text-align: center;
+}
+
+.choice td {
+    border: 2px solid black;
+    padding: 8px;
+    text-align: center;
+}
