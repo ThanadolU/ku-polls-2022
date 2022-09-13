@@ -30,10 +30,27 @@ class DetailView(generic.DetailView):
         """
         return Question.objects.filter(pub_date__lte=timezone.localtime())
 
+    def get(self, request, pk):
+        question = get_object_or_404(Question, pk=pk) 
+        if not question.can_vote():
+            messages.error(request, 'Voting period has ended.')
+            return HttpResponseRedirect(reverse('polls:index'))
+        elif not question.is_published():
+            messages.error(request, 'This poll is not published.')
+            return HttpResponseRedirect(reverse('polls:index'))
+        return render(request, 'polls/detail.html', {'question': question,})     
+
 
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
+
+    def get(self, request, pk):
+        question = get_object_or_404(Question, pk=pk)
+        if question.is_published():
+            return render(request, 'polls/results.html', {'question': question,})
+        messages.error(request, 'This poll is not available.')
+        return HttpResponseRedirect(reverse('polls:index'))
 
 
 def vote(request, question_id):
@@ -46,10 +63,6 @@ def vote(request, question_id):
             'error_message': "You didn't select a choice.",
         })
     else:
-        if question.can_vote():
-            selected_choice.votes += 1
-            selected_choice.save()
-            return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
-        else:
-            messages.error(request, 'Access denied')
-            return HttpResponseRedirect(reverse('polls:index'))
+        selected_choice.votes += 1
+        selected_choice.save()
+        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
