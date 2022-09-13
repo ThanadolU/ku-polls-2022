@@ -32,11 +32,11 @@ class DetailView(generic.DetailView):
 
     def get(self, request, pk):
         question = get_object_or_404(Question, pk=pk) 
+        if not question.is_published():
+            messages.error(request, 'This poll is not published.')
+            return HttpResponseRedirect(reverse('polls:index'))
         if not question.can_vote():
             messages.error(request, 'Voting period has ended.')
-            return HttpResponseRedirect(reverse('polls:index'))
-        elif not question.is_published():
-            messages.error(request, 'This poll is not published.')
             return HttpResponseRedirect(reverse('polls:index'))
         return render(request, 'polls/detail.html', {'question': question,})     
 
