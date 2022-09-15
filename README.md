@@ -21,3 +21,4 @@ All project documents are in the [Project Wiki](../../wiki/Home).
 - [Requirements](https://github.com/ThanadolU/ku-polls/wiki/Requirements)
 - [Development Plan](https://github.com/ThanadolU/ku-polls/wiki/Development-Plan)
 - [Iteration 1](https://github.com/ThanadolU/ku-polls/wiki/Iteration-1-Plan)
+- [Iteration 2](https://github.com/ThanadolU/ku-polls/wiki/Iteration-2-Plan)
