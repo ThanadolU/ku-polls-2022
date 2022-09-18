@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Question, Choice
+from .models import Question, Choice, Vote
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -77,6 +77,10 @@ def vote(request, question_id):
             'error_message': "You didn't select a choice.",
         })
     else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+        try:
+            vote_object = Vote.objects.get(user=user)
+            vote_object.choice = selected_choice
+            vote_object.save()
+        except Vote.DoesNotExist:
+            Vote.objects.create(user=user, choice=selected_choice).save()
+    return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
