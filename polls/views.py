@@ -4,9 +4,11 @@ from django.utils import timezone
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Question, Choice
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class IndexView(generic.ListView):
@@ -20,7 +22,7 @@ class IndexView(generic.ListView):
         return Question.objects.filter(pub_date__lte=timezone.localtime()).order_by('-pub_date')[:5]
 
 
-class DetailView(generic.DetailView):
+class DetailView(LoginRequiredMixin, generic.DetailView):
     """Detail page of application."""
 
     model = Question
@@ -60,8 +62,12 @@ class ResultsView(generic.DetailView):
         return HttpResponseRedirect(reverse('polls:index'))
 
 
+@login_required
 def vote(request, question_id):
     """Add vote to selected choice of current question."""
+    user = request.user
+    if not user.is_authenicated:
+        return redirect('login')
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
