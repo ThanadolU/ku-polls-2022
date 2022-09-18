@@ -66,7 +66,7 @@ class ResultsView(generic.DetailView):
 def vote(request, question_id):
     """Add vote to selected choice of current question."""
     user = request.user
-    if not user.is_authenicated:
+    if not user.is_authenticated:
         return redirect('login')
     question = get_object_or_404(Question, pk=question_id)
     try:
