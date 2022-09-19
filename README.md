@@ -13,6 +13,13 @@ https://cpske.github.io/ISP) course at Kasetsart University.
 
 to be added.
 
+## Demo Users and 
+
+|   Username   |   password   |
+|:-------------|:-------------|
+|   harry	   |   hackme22   |
+|   guest123   |   8520       |
+
 ## Project Documents
 
 All project documents are in the [Project Wiki](../../wiki/Home).
@@ -22,3 +29,4 @@ All project documents are in the [Project Wiki](../../wiki/Home).
 - [Development Plan](https://github.com/ThanadolU/ku-polls/wiki/Development-Plan)
 - [Iteration 1](https://github.com/ThanadolU/ku-polls/wiki/Iteration-1-Plan)
 - [Iteration 2](https://github.com/ThanadolU/ku-polls/wiki/Iteration-2-Plan)
+- [Iteration 3](https://github.com/ThanadolU/ku-polls/wiki/Iteration-3-Plan)
