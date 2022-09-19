@@ -45,7 +45,6 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
         if not question.can_vote():
             messages.error(request, 'Voting period has ended.')
             return HttpResponseRedirect(reverse('polls:index'))
-        # selected_choice = ''
         if not user.is_authenticated:
             return redirect('login')
         try:
@@ -54,7 +53,7 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
         except Vote.DoesNotExist:
             selected_choice = ''
         return render(request, 'polls/detail.html', {'question': question, 'selected_choice': selected_choice})
-        # return render(request, 'polls/detail.html', {'question': question, 'selected_choice': selected_choice})
+
 
 class ResultsView(generic.DetailView):
     """Result page of application."""
