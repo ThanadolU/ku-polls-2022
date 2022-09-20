@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Question, Choice
+from .models import Question, Choice, Vote
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -37,14 +37,22 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
         
         Return index page if is_published or can_vote are true. If not return detail page.
         """
-        question = get_object_or_404(Question, pk=pk) 
+        user = request.user
+        question = get_object_or_404(Question, pk=pk)
         if not question.is_published():
             messages.error(request, 'This poll is not published.')
             return HttpResponseRedirect(reverse('polls:index'))
         if not question.can_vote():
             messages.error(request, 'Voting period has ended.')
             return HttpResponseRedirect(reverse('polls:index'))
-        return render(request, 'polls/detail.html', {'question': question,})     
+        if not user.is_authenticated:
+            return redirect('login')
+        try:
+            vote_object = Vote.objects.get(user=user, choice__in=question.choice_set.all())
+            selected_choice = vote_object.choice.choice_text
+        except Vote.DoesNotExist:
+            selected_choice = ''
+        return render(request, 'polls/detail.html', {'question': question, 'selected_choice': selected_choice})
 
 
 class ResultsView(generic.DetailView):
@@ -77,6 +85,10 @@ def vote(request, question_id):
             'error_message': "You didn't select a choice.",
         })
     else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+        try:
+            vote_object = Vote.objects.get(user=user,  choice__in=question.choice_set.all())
+            vote_object.choice = selected_choice
+            vote_object.save()
+        except Vote.DoesNotExist:
+            Vote.objects.create(user=user, choice=selected_choice).save()
+    return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))

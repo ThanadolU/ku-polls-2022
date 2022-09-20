@@ -3,8 +3,8 @@ import datetime
 from django.test import TestCase
 from django.utils import timezone
 from django.urls import reverse
-
-from .models import Question
+from django.contrib.auth.models import User
+from .models import Question, Vote
 
 
 def create_question(question_text, days):
@@ -163,6 +163,11 @@ class QuestionIndexViewTests(TestCase):
 
 
 class QuestionDetailViewTests(TestCase):
+    def setUp(self):
+        """Setup before running a tests."""
+        user = User.objects.create_user(username='someone', email='someone@example.com', password='1234')
+        user.save()
+
     def test_future_question(self):
         """
         The detail view of a question with a pub_date in the future
@@ -178,7 +183,42 @@ class QuestionDetailViewTests(TestCase):
         The detail view of a question with a pub_date in the past
         displays the question's text.
         """
+        self.client.login(username='someone', password='1234')
         past_question = create_question(question_text='Past Question.', days=-5)
         url = reverse('polls:detail', args=(past_question.id,))
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
+
+
+class VoteModelTest(TestCase):
+
+    def setUp(self):
+        """Setup before running a tests."""
+        self.user = User.objects.create_user(username='someone', email='someone@example.com', password='1234')
+        self.user.save()
+
+    def test_authenticated_can_vote(self):
+        """Test authenticated users can vote."""
+        self.client.login(username='someone', password='1234')
+        question = create_question(question_text='test', days=1)
+        response = self.client.post(reverse('polls:vote', args=(question.id,)))
+        self.assertEqual(response.status_code, 200)
+        
+    def test_unauthenticated_cannot_vote(self):
+        """Test authenticated users can't vote."""
+        question = create_question(question_text='test', days=1)
+        response = self.client.post(reverse('polls:vote', args=(question.id,)))
+        self.assertEqual(response.status_code, 302)
+
+    def test_one_user_one_vote(self):
+        """One user can vote once per question."""
+        self.client.login(username='someone', password='1234')
+        question = create_question(question_text='test', days=2)
+        choice_1 = question.choice_set.create(choice_text='Good')
+        choice_2 = question.choice_set.create(choice_text='Not Good')
+        response = self.client.post(reverse('polls:vote', args=(question.id,)), {'choice': choice_1.id})
+        self.assertEqual(Vote.objects.get(user=self.user, choice__in=question.choice_set.all()).choice, choice_1)
+        self.assertEqual(Vote.objects.all().count(), 1)
+        response = self.client.post(reverse('polls:vote', args=(question.id,)), {'choice': choice_2.id})
+        self.assertEqual(Vote.objects.get(user=self.user, choice__in=question.choice_set.all()).choice, choice_2)
+        self.assertEqual(Vote.objects.all().count(), 1)
