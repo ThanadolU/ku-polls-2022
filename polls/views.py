@@ -1,5 +1,5 @@
 """This module contains the views of each page of the application."""
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.utils import timezone
 from django.urls import reverse
 from django.views import generic
@@ -38,7 +38,11 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
         Return index page if is_published or can_vote are true. If not return detail page.
         """
         user = request.user
-        question = get_object_or_404(Question, pk=pk)
+        try:
+            question = get_object_or_404(Question, pk=pk)
+        except Http404:
+            messages.error(request, 'We don\'t have this question')
+            return HttpResponseRedirect(reverse('polls:index'))
         if not question.is_published():
             messages.error(request, 'This poll is not published.')
             return HttpResponseRedirect(reverse('polls:index'))
