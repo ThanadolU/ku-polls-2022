@@ -1,3 +1,4 @@
+"""This module contains the url patterns to different pages."""
 from django.urls import path
 
 from . import views

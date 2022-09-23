@@ -3,7 +3,6 @@ from django.http import HttpResponseRedirect, Http404
 from django.utils import timezone
 from django.urls import reverse
 from django.views import generic
-from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Question, Choice, Vote
 from django.contrib import messages
@@ -18,8 +17,11 @@ class IndexView(generic.ListView):
     context_object_name = 'latest_question_list'
 
     def get_queryset(self):
-        """Return the last five published questions (not including those set to be published in the future)."""
-        return Question.objects.filter(pub_date__lte=timezone.localtime()).order_by('-pub_date')[:5]
+        """Return the last five published questions
+        (not including those set to be published in the future).
+        """
+        return Question.objects.filter(
+            pub_date__lte=timezone.localtime()).order_by('-pub_date')[:5]
 
 
 class DetailView(LoginRequiredMixin, generic.DetailView):
@@ -34,8 +36,8 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
 
     def get(self, request, pk):
         """Return different pages depend on is_published and can_vote.
-        
-        Return index page if is_published or can_vote are true. If not return detail page.
+        Return index page if is_published or can_vote are true.
+        If not return detail page.
         """
         user = request.user
         try:
@@ -52,11 +54,13 @@ class DetailView(LoginRequiredMixin, generic.DetailView):
         if not user.is_authenticated:
             return redirect('login')
         try:
-            vote_object = Vote.objects.get(user=user, choice__in=question.choice_set.all())
+            vote_object = Vote.objects.get(user=user,
+                                           choice__in=question.choice_set.all())
             selected_choice = vote_object.choice.choice_text
         except Vote.DoesNotExist:
             selected_choice = ''
-        return render(request, 'polls/detail.html', {'question': question, 'selected_choice': selected_choice})
+        return render(request, 'polls/detail.html', {'question': question,
+                                                     'selected_choice': selected_choice})
 
 
 class ResultsView(generic.DetailView):
@@ -66,10 +70,14 @@ class ResultsView(generic.DetailView):
     template_name = 'polls/results.html'
 
     def get(self, request, pk):
-        """Return result page if is_published method returns true. If not redirect to the index page."""
+        """Return result page if is_published method returns true.
+        If not redirect to the index page.
+        """
         question = get_object_or_404(Question, pk=pk)
         if question.is_published():
-            return render(request, 'polls/results.html', {'question': question,})
+            return render(request,
+                          'polls/results.html',
+                          {'question': question, })
         messages.error(request, 'This poll is not available.')
         return HttpResponseRedirect(reverse('polls:index'))
 
@@ -90,7 +98,8 @@ def vote(request, question_id):
         })
     else:
         try:
-            vote_object = Vote.objects.get(user=user,  choice__in=question.choice_set.all())
+            vote_object = Vote.objects.get(user=user,
+                                           choice__in=question.choice_set.all())
             vote_object.choice = selected_choice
             vote_object.save()
         except Vote.DoesNotExist:
