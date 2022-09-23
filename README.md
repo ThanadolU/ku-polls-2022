@@ -11,22 +11,32 @@ https://cpske.github.io/ISP) course at Kasetsart University.
 
 ## Install and Run
 
-first clone this repository by type this command in your terminal at your choose path
-```
-git clone https://github.com/ThanadolU/ku-polls.git
-```
+1. first clone this repository by type this command in your terminal at your choose path
+   ```
+   git clone https://github.com/ThanadolU/ku-polls.git
+   ```
 
-make sure that you install all the requirements by run this command, its can be whether `pip`, `pip3`, or `python -m pip`
-```
-pip install -r requirements.txt
-```
+2. make sure that you install all the requirements by run this command, its can be whether `pip`, `pip3`, or `python -m pip`
+   ```
+   pip install -r requirements.txt
+   ```
 
-Next, you will need to configure your server using `.env` (you may get your secret key [here](https://djecrety.ir/)). Take a look at `sample.env`
+3. You will need to configure your server using `.env` (you may get your secret key [here](https://djecrety.ir/)). Take a look at `sample.env`.
 
-The final step is to run the development server by,
-```
-python manage.py runserver
-```
+4. Create the database run
+   ```
+   python manage.py migrate
+   ```
+5. Load the data
+   ```
+   python manage.py loaddata data/polls.json data/users.json
+   ```
+
+6. The final step is to run the development server by,
+   ```
+   python manage.py runserver
+   ```
+
 You can now visit, `http://127.0.0.1:8000/` or `http://localhost:8000`
 
 ## Demo Admin
