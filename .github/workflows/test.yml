@@ -14,6 +14,7 @@ permissions:
 
 env:
   SECRET_KEY: something-secret-key
+  TIME_ZONE: UTC
 
 jobs:
   build:
