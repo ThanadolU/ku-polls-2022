@@ -57,15 +57,6 @@ class QuestionModelTests(TestCase):
         question = Question(pub_date=time)
         self.assertIs(question.can_vote(), False)
 
-    def test_can_vote_in_the_current(self):
-        """
-        can_vote() return True (voting allowed) because pub_date
-        and enddate are in the same time.
-        """
-        time = timezone.localtime()
-        question = Question(pub_date=time, end_date=time)
-        self.assertIs(question.can_vote(), True)
-
     def test_can_vote_after_end_date(self):
         """
         can_vote() return False (voting not allowed)
