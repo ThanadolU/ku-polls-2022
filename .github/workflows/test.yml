@@ -12,6 +12,9 @@ on:
 permissions:
   contents: read
 
+env:
+  SECRET_KEY: something-secret-key
+
 jobs:
   build:
 
@@ -33,7 +36,7 @@ jobs:
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+    - name: Test code coverage
       run: |
         coverage run manage.py test polls
     - name: Upload
