@@ -6,7 +6,7 @@
 [![codecov](https://codecov.io/gh/ThanadolU/ku-polls/branch/main/graph/badge.svg?token=PTPT1VUUCO)](https://codecov.io/gh/ThanadolU/ku-polls)
 
 An application for conducting online polls and surveys based
-on the [Django Tutorial project][django-tutorial], with
+on the [Django Tutorial project](https://docs.djangoproject.com/en/4.1/intro/tutorial01/), with
 additional features.
 
 App created as part of the [Individual Software Process](
